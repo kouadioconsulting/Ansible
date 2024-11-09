@@ -1,0 +1,43 @@
+#PLAY 1
+- name: Deploy Apache webserver with a custom message on Ubuntu clients
+  hosts: ubuntu-clients  
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+    - name: Install Apache webserver
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+    
+    - name: Create the custom HTML message for the webserver
+      copy:
+        content: "Welcome to my Apache web server created by Kouadio."
+        dest: /var/www/html/index.html
+    
+    - name: Start and enable Apache service
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+#PLAY 2
+- name: Install Git on all Ubuntu clients
+  hosts: ubuntu-clients 
+  tasks:
+    - name: Install Git
+      apt:
+        name: git
+        state: present
+        update_cache: yes
+
+#PLAY 3
+- name: Display my name "KOUADIO" on all hosts (Ubuntu and Amazon Linux)
+  hosts: all
+  vars:
+    my_name: "KOUADIO"  
+  tasks:
+    - name: Display my name using the debug module
+      debug:
+        msg: "My name is {{ my_name }}"
